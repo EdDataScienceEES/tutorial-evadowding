@@ -40,3 +40,11 @@ All the other useful links we have shared with previous challenges and from the 
 1. Formatting dates and times in R using lubridate
 2. Plotting and data visualisation with time series
 3. Maybe smoothing? Trends
+
+## Citations
+
+EDGAR (Emissions Database for Global Atmospheric Research) Community GHG Database, a collaboration between the European Commission, Joint Research Centre (JRC), the International Energy Agency (IEA), and comprising IEA-EDGAR CO2, EDGAR CH4, EDGAR N2O, EDGAR F-GASES version 2024 European Commission, JRC (Datasets). The complete citation of the EDGAR Community GHG Database is available in the 'Sources and References' section.
+
+IEA-EDGAR CO2, a component of the EDGAR (Emissions Database for Global Atmospheric Research) Community GHG database version 2024 including or based on data from IEA (2023) Greenhouse Gas Emissions from Energy, www.iea.org/data-and-statistics, as modified by the Joint Research Centre.
+
+Users of the data are obliged to acknowledge the source of the data also with reference to the EDGARv2024 website (link) and/or relevant reports.
