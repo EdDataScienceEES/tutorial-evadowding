@@ -33,3 +33,10 @@ __Absolute top of the class examples of tutorials made by DS students:__
 - https://ourcodingclub.github.io/tutorials/spatial/ - Intro to Spatial Analysis in R by Maude Grenier
 
 All the other useful links we have shared with previous challenges and from the course reading - think of the tutorials you have done in the past - what did you like about those tutorials, what didn't work so well and could be improved.
+
+
+## Plan
+
+1. Formatting dates and times in R using lubridate
+2. Plotting and data visualisation with time series
+3. Maybe smoothing? Trends
