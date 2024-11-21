@@ -8,11 +8,11 @@ To add images, replace `tutheaderbl1.png` with the file name of any image you up
 
 ### Tutorial Aims
 
-#### <a href="#section1"> 1. The first section</a>
+#### <a href="#section1"> 1. Learning to use date and time formats in R using the "lubridate" package</a>
 
-#### <a href="#section2"> 2. The second section</a>
+#### <a href="#section2"> 2. Plotting and data visualisation with time series</a>
 
-#### <a href="#section3"> 3. The third section</a>
+#### <a href="#section3"> 3. Trends in time series data</a>
 
 You can read this text, then delete it and replace it with your text about your tutorial: what are the aims, what code do you need to achieve them?
 ---------------------------
