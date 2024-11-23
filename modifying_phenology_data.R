@@ -33,4 +33,22 @@ mod_phen <- phen %>%
 
 # Messing up dates ----
 mess_phen <- mod_phen %>% 
-  
+  mutate(`2005` = ymd("2005-01-01") + days(`2005`),
+         `2006` = ymd("2006-01-01") + days(`2006`),
+         `2007` = ymd("2007-01-01") + days(`2007`),
+         `2008` = ymd("2008-01-01") + days(`2008`),
+         `2009` = ymd("2009-01-01") + days(`2009`),
+         `2010` = ymd("2010-01-01") + days(`2010`),
+         `2011` = ymd("2011-01-01") + days(`2011`),
+         `2012` = ymd("2012-01-01") + days(`2012`),
+         `2013` = ymd("2013-01-01") + days(`2013`),
+         `2014` = ymd("2014-01-01") + days(`2014`),
+         `2015` = ymd("2015-01-01") + days(`2015`)) %>%  # Converting to normal date format
+  mutate(`2006` = `2006` + hours(12),
+         `2007` = paste(day(`2007`), "th", month(`2007`, label = TRUE), year(`2007`)),
+         `2008` = paste0(year(`2008`), month(`2008`), day(`2008`)),
+         `2009` = paste(month(`2009`, label = TRUE), day(`2009`), "th", year(`2009`)),
+         `2010` = `2010` + hours(15) + minutes(35) + seconds(30),
+         `2011` = paste0(day(`2011`), "/", month(`2011`), "/", year(`2011`), " 10.20.35"),
+         `2012` = paste(month(`2012`, label = TRUE), year(`2012`))) %>% 
+  select(-c(`2013`:`2015`)) %>% 
