@@ -52,3 +52,19 @@ mess_phen <- mod_phen %>%
          `2011` = paste0(day(`2011`), "/", month(`2011`), "/", year(`2011`), " 10.20.35"),
          `2012` = paste(month(`2012`, label = TRUE), year(`2012`))) %>% 
   select(-c(`2013`:`2015`)) %>% 
+  mutate(`2007` = case_when(grepl("NA", `2007`) ~ NA,
+                            !grepl("NA", `2007`) ~ `2007`),
+         `2008` = case_when(grepl("NA", `2008`) ~ NA,
+                            !grepl("NA", `2008`) ~ `2008`),
+         `2009` = case_when(grepl("NA", `2009`) ~ NA,
+                            !grepl("NA", `2009`) ~ `2009`),
+         `2010` = case_when(grepl("NA", `2010`) ~ NA,
+                            !grepl("NA", `2010`) ~ `2010`),
+         `2011` = case_when(grepl("NA", `2011`) ~ NA,
+                            !grepl("NA", `2011`) ~ `2011`),
+         `2012` = case_when(grepl("NA", `2012`) ~ NA,
+                            !grepl("NA", `2012`) ~ `2012`)) %>%
+  filter(if_any(`2005`:`2012`, ~ !is.na(.)))
+
+write.csv(mess_phen, file = "data/messy_phenology.csv")
+
