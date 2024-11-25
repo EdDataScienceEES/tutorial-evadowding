@@ -8,11 +8,22 @@ To add images, replace `tutheaderbl1.png` with the file name of any image you up
 
 ### Tutorial Aims
 
-#### <a href="#section1"> 1. Learning to use date and time formats in R using the "lubridate" package</a>
+1. Understand how dates and date-times are stored in R
 
-#### <a href="#section2"> 2. Plotting and data visualisation with time series</a>
+2. Learn to use `lubridate` to manipulate dates and date-times more easily
 
-#### <a href="#section3"> 3. Trends in time series data</a>
+3. Explore visualisation of time series in R
+
+### Tutorial Steps
+
+1. <a href="#section1"> Learn to use date and time formats in R using the "lubridate" package</a>
+
+2. <a href="#section2"> Plotting and data visualisation with time series</a>
+
+3. <a href="#section3"> Trends in time series data</a>
+
+
+
 
 You can read this text, then delete it and replace it with your text about your tutorial: what are the aims, what code do you need to achieve them?
 ---------------------------
@@ -20,17 +31,22 @@ We are using `<a href="#section_number">text</a>` to create anchors within our t
 
 To create subheadings, you can use `#`, e.g. `# Subheading 1` creates a subheading with a large font size. The more hashtags you add, the smaller the text becomes. If you want to make text bold, you can surround it with `__text__`, which creates __text__. For italics, use only one understore around the text, e.g. `_text_`, _text_.
 
-# Subheading 1
-## Subheading 2
-### Subheading 3
-
 This is some introductory text for your tutorial. Explain the skills that will be learned and why they are important. Set the tutorial in context.
 
 You can get all of the resources for this tutorial from <a href="https://github.com/ourcodingclub/CC-EAB-tut-ideas" target="_blank">this GitHub repository</a>. Clone and download the repo as a zip file, then unzip it.
 
 <a name="section1"></a>
 
-## 1. The first section
+## Downloading data
+
+We're going to use two different data sources in this tutorial: phenology data describing the timings of natural events of tree species in the International Phenology Garden at Alice Holt, Hampshire (more information can be found [here](https://www.data.gov.uk/dataset/f9994171-c71f-4aff-b738-54d40b96112c/observations-from-the-international-phenology-garden-at-alice-holt-hampshire-2005-2015)) and monthly CO2 emission estimates of different countries from the Emissions Database for Global Atmospheric Research (EDGAR) (more information can be found [here](https://edgar.jrc.ec.europa.eu/dataset_ghg2024#intro)).
+
+You can access this data by going to [this repository](https://github.com/EdDataScienceEES/tutorial-evadowding.git) and cloning and downloading the repository as a zip file. You can then set your working directory as shown in the code below.
+
+## 1. Create, modify and explore dates and times in Base R
+
+Open up `RStudio` and make a new script b
+
 
 
 At the beginning of your tutorial you can ask people to open `RStudio`, create a new script by clicking on `File/ New File/ R Script` set the working directory and load some packages, for example `ggplot2` and `dplyr`. You can surround package names, functions, actions ("File/ New...") and small chunks of code with backticks, which defines them as inline code blocks and makes them stand out among the text, e.g. `ggplot2`.
