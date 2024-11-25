@@ -44,29 +44,78 @@ You can access this data by going to [this repository](https://github.com/EdData
 # Current date here
 # Any important notes
 
-# Load libraries
-# 
-library(lubridate)
+# Load libraries ----
+# install.packages("lubridate")  # Run this if you haven't got lubridate installed already
+library(lubridate)  # Date and time manipulation
+library(dplyr)  # Data manipulation package
+library(ggplot2)  # Data visualisation package
+
+# Load data
+phenology <- read.csv("data/messy_phenology.csv")  # Loading in Alice Holt Phenology data
+emissions <- read.csv("data/CO2_1970_2023.csv")  # Loading in IEA EDGAR CO2 data
+
 ```
 
-## 1. Create, modify and explore dates and times in Base R
+We can now have a look at the `phenology` data using `glimpse()` from the `dplyr` package. We'll use the `emissions` data later.
 
-Open up `RStudio` and make a new script b
-
-At the beginning of your tutorial you can ask people to open `RStudio`, create a new script by clicking on `File/ New File/ R Script` set the working directory and load some packages, for example `ggplot2` and `dplyr`. You can surround package names, functions, actions ("File/ New...") and small chunks of code with backticks, which defines them as inline code blocks and makes them stand out among the text, e.g. `ggplot2`.
-
-When you have a larger chunk of code, you can paste the whole code in the `Markdown` document and add three backticks on the line before the code chunks starts and on the line after the code chunks ends. After the three backticks that go before your code chunk starts, you can specify in which language the code is written, in our case `R`.
-
-To find the backticks on your keyboard, look towards the top left corner on a Windows computer, perhaps just above `Tab` and before the number one key. On a Mac, look around the left `Shift` key. You can also just copy the backticks from below.
-
-``` r
-# Set the working directory
-setwd("your_filepath")
-
-# Load packages
-library(ggplot2)
-library(dplyr)
+```r
+# Explore the data
+glimpse(phenology)
 ```
+This has the dates and times of observation of many different phenological events over 7 years. You can see that all of the variables load in as character variables, apart from the index `X` and the year `X2008`.
+
+## 1. Create, modify and understand dates and times in Base R
+
+Dates and date-times are two different data classes in R. There is not a base R time data class, the library `hmu` deals with that but that is beyond the scope of today's tutorial. The date class is simply called `Date`, while the date-time class is called `POSIXlt`. They are written as year-month-day hour:minute:second, or just year-month-day. We will define a date and a date-time below using the `as.Date` and `as.POSIXlt` functions.
+
+```r
+# Creating dates and date-times in base R
+date <- as.Date("2015-06-13")  # Defining a date
+datetime <- as.POSIXlt("2016/03/30 13:40:05")  # Defining a date-time
+
+# Now try converting them to numbers. What do you get?
+as.numeric(date)
+
+as.numeric(datetime)
+
+```
+You get 16599, then 1459243605, but what do they mean?
+
+Dates in R are stored as the number of days since 1st January 1970, and date-times are stored as the number of seconds since then. This means that there were 16599 days between 1970/01/01 and 2015/06/13, and 1459243605 between 1970/01/01 and 2016/03/30 13:40:05. 
+If you want to find out exactly how many seconds have passed since 01/01/1970, you can run `as.numeric(Sys.time())` and likewise, for the number of days you can run `as.numeric(Sys.date()).` `Sys.time()` and `Sys.date()` give you the current time and date according to your computer.
+
+You might have noticed that in the above example, in our date we used dashes to separate our date, whereas in the date-time we used forward slashes. Either is fine. The important thing here is the order of year/month/date.
+
+This is fine, but when we have dates and times in many different formats, things begin to get a bit complicated. If you have another `glimpse()` at the `phenology` data, you will see that every year has their event dates in a different format. We can deal with this in base R, but it does begin to get a bit complicated. If we wanted to make a date from the character string "August 7th 1989", we can use the code below.
+
+```r
+
+as.Date("August 7th, 1989")  # This just produces an NA!
+
+as.Date("August 7th, 1989", format = "%B %dth, %Y")  # We have to tell R what format the date is in.
+
+# Or for another date-time format:
+as.POSIXlt("15 Jan 2002 03:15", format = "%d %b %Y %H:%M")
+
+```
+This can get quite complicated quite quickly, not to mention when we get into time zones and timelines (we'll come to that later). 
+
+|Code	|Meaning	|Code	|Meaning |
+|-----|-----|-----|-----|
+|%a	|Abbreviated weekday	|%A	|Full weekday |
+|%b	|Abbreviated month	|%B	|Full month |
+|%c	|Locale-specific date and time	|%d	|Decimal date |
+|%H	|Decimal hours (24 hour)	|%I	|Decimal hours (12 hour) |
+|%j	|Decimal day of the year	|%m	|Decimal month |
+|%M	|Decimal minute	|%p	|Locale-specific AM/PM |
+|%S	|Decimal second	|%U	|Decimal week of the year (starting on Sunday) |
+|%w	|Decimal Weekday (0=Sunday)	|%W	|Decimal week of the year (starting on Monday) |
+|%x	|Locale-specific Date	|%X	|Locale-specific Time|
+|%y	|2-digit year	|%Y	|4-digit year |
+|%z	|Offset from GMT	|%Z	|Time zone (character) |
+
+Don't worry about learning this! It's just to demostrate how complicated dates can get.
+
 
 <a name="section2"></a>
 
