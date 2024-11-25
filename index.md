@@ -2,52 +2,56 @@
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<center><img src="{{ site.baseurl }}/tutheaderbl.png" alt="Img"></center>
+<center><img src="{{ site.baseurl }}/tutheaderbl.png" alt="Img"/></center>
 
 To add images, replace `tutheaderbl1.png` with the file name of any image you upload to your GitHub repository.
 
 ### Tutorial Aims
 
-1. Understand how dates and date-times are stored in R
+1.  Understand how dates and date-times are stored in R
 
-2. Learn to use `lubridate` to manipulate dates and date-times more easily
+2.  Learn to use `lubridate` to manipulate dates and date-times more easily
 
-3. Explore visualisation of time series in R
+3.  Explore visualisation of time series in R
 
 ### Tutorial Steps
 
-1. <a href="#section1"> Learn to use date and time formats in R using the "lubridate" package</a>
+1.  <a href="#section1"> Learn to use date and time formats in R using the "lubridate" package</a>
 
-2. <a href="#section2"> Plotting and data visualisation with time series</a>
+2.  <a href="#section2"> Plotting and data visualisation with time series</a>
 
-3. <a href="#section3"> Trends in time series data</a>
+3.  <a href="#section3"> Trends in time series data</a>
 
+## You can read this text, then delete it and replace it with your text about your tutorial: what are the aims, what code do you need to achieve them?
 
-
-
-You can read this text, then delete it and replace it with your text about your tutorial: what are the aims, what code do you need to achieve them?
----------------------------
 We are using `<a href="#section_number">text</a>` to create anchors within our text. For example, when you click on section one, the page will automatically go to where you have put `<a name="section_number"></a>`.
 
-To create subheadings, you can use `#`, e.g. `# Subheading 1` creates a subheading with a large font size. The more hashtags you add, the smaller the text becomes. If you want to make text bold, you can surround it with `__text__`, which creates __text__. For italics, use only one understore around the text, e.g. `_text_`, _text_.
+To create subheadings, you can use `#`, e.g. `# Subheading 1` creates a subheading with a large font size. The more hashtags you add, the smaller the text becomes. If you want to make text bold, you can surround it with `__text__`, which creates **text**. For italics, use only one understore around the text, e.g. `_text_`, *text*.
 
 This is some introductory text for your tutorial. Explain the skills that will be learned and why they are important. Set the tutorial in context.
-
-You can get all of the resources for this tutorial from <a href="https://github.com/ourcodingclub/CC-EAB-tut-ideas" target="_blank">this GitHub repository</a>. Clone and download the repo as a zip file, then unzip it.
 
 <a name="section1"></a>
 
 ## Downloading data
 
-We're going to use two different data sources in this tutorial: phenology data describing the timings of natural events of tree species in the International Phenology Garden at Alice Holt, Hampshire (more information can be found [here](https://www.data.gov.uk/dataset/f9994171-c71f-4aff-b738-54d40b96112c/observations-from-the-international-phenology-garden-at-alice-holt-hampshire-2005-2015)) and monthly CO2 emission estimates of different countries from the Emissions Database for Global Atmospheric Research (EDGAR) (more information can be found [here](https://edgar.jrc.ec.europa.eu/dataset_ghg2024#intro)).
+We're going to use two different data sources in this tutorial: phenology data describing the timings of natural events of tree species in the International Phenology Garden at Alice Holt, Hampshire (more information can be found [here](https://www.data.gov.uk/dataset/f9994171-c71f-4aff-b738-54d40b96112c/observations-from-the-international-phenology-garden-at-alice-holt-hampshire-2005-2015)) and monthly CO2 emission estimates of different countries from the Emissions Database for Global Atmospheric Research (EDGAR) (more information can be found [here](https://edgar.jrc.ec.europa.eu/dataset_ghg2024#intro)). This data has been reformatted and subsetted to make it more suitable for this tutorial, but the actual data is still correct.
 
-You can access this data by going to [this repository](https://github.com/EdDataScienceEES/tutorial-evadowding.git) and cloning and downloading the repository as a zip file. You can then set your working directory as shown in the code below.
+You can access this data by going to [this repository](https://github.com/EdDataScienceEES/tutorial-evadowding.git) and cloning and downloading the repository as a zip file. You can then set your working directory as shown in the code below. Make a new R script with `File/New File/R Script` or with `Ctrl+Shift+N`.
+
+``` r
+# Tutorial on dates and date-times
+# Your name here
+# Current date here
+# Any important notes
+
+# Load libraries
+# 
+library(lubridate)
+```
 
 ## 1. Create, modify and explore dates and times in Base R
 
 Open up `RStudio` and make a new script b
-
-
 
 At the beginning of your tutorial you can ask people to open `RStudio`, create a new script by clicking on `File/ New File/ R Script` set the working directory and load some packages, for example `ggplot2` and `dplyr`. You can surround package names, functions, actions ("File/ New...") and small chunks of code with backticks, which defines them as inline code blocks and makes them stand out among the text, e.g. `ggplot2`.
 
@@ -55,7 +59,7 @@ When you have a larger chunk of code, you can paste the whole code in the `Markd
 
 To find the backticks on your keyboard, look towards the top left corner on a Windows computer, perhaps just above `Tab` and before the number one key. On a Mac, look around the left `Shift` key. You can also just copy the backticks from below.
 
-```r
+``` r
 # Set the working directory
 setwd("your_filepath")
 
@@ -70,7 +74,7 @@ library(dplyr)
 
 You can add more text and code, e.g.
 
-```r
+``` r
 # Create fake data
 x_dat <- rnorm(n = 100, mean = 5, sd = 2)  # x data
 y_dat <- rnorm(n = 100, mean = 10, sd = 0.2)  # y data
@@ -79,22 +83,22 @@ xy <- data.frame(x_dat, y_dat)  # combine into data frame
 
 Here you can add some more text if you wish.
 
-```r
+``` r
 xy_fil <- xy %>%  # Create object with the contents of `xy`
-	filter(x_dat < 7.5)  # Keep rows where `x_dat` is less than 7.5
+    filter(x_dat < 7.5)  # Keep rows where `x_dat` is less than 7.5
 ```
 
 And finally, plot the data:
 
-```r
+``` r
 ggplot(data = xy_fil, aes(x = x_dat, y = y_dat)) +  # Select the data to use
-	geom_point() +  # Draw scatter points
-	geom_smooth(method = "loess")  # Draw a loess curve
+    geom_point() +  # Draw scatter points
+    geom_smooth(method = "loess")  # Draw a loess curve
 ```
 
 At this point it would be a good idea to include an image of what the plot is meant to look like so students can check they've done it right. Replace `IMAGE_NAME.png` with your own image file:
 
-<center> <img src="{{ site.baseurl }}/IMAGE_NAME.png" alt="Img" style="width: 800px;"/> </center>
+<center><img src="{{ site.baseurl }}/IMAGE_NAME.png" alt="Img" style="width: 800px;"/></center>
 
 <a name="section1"></a>
 
@@ -105,7 +109,9 @@ More text, code and images.
 This is the end of the tutorial. Summarise what the student has learned, possibly even with a list of learning outcomes. In this tutorial we learned:
 
 ##### - how to generate fake bivariate data
+
 ##### - how to create a scatterplot in ggplot2
+
 ##### - some of the different plot methods in ggplot2
 
 We can also provide some useful links, include a contact form and a way to send feedback.
@@ -115,35 +121,41 @@ For more on `ggplot2`, read the official <a href="https://www.rstudio.com/wp-con
 Everything below this is footer material - text and links that appears at the end of all of your tutorials.
 
 <hr>
+
 <hr>
 
 #### Check out our <a href="https://ourcodingclub.github.io/links/" target="_blank">Useful links</a> page where you can find loads of guides and cheatsheets.
 
-#### If you have any questions about completing this tutorial, please contact us on ourcodingclub@gmail.com
+#### If you have any questions about completing this tutorial, please contact us on [ourcodingclub\@gmail.com](mailto:ourcodingclub@gmail.com){.email}
 
 #### <a href="INSERT_SURVEY_LINK" target="_blank">We would love to hear your feedback on the tutorial, whether you did it in the classroom or online!</a>
 
 <ul class="social-icons">
-	<li>
-		<h3>
-			<a href="https://twitter.com/our_codingclub" target="_blank">&nbsp;Follow our coding adventures on Twitter! <i class="fa fa-twitter"></i></a>
-		</h3>
-	</li>
+
+<li>
+
+<h3><a href="https://twitter.com/our_codingclub" target="_blank"> Follow our coding adventures on Twitter! <i class="fa fa-twitter"></i></a></h3>
+
+</li>
+
 </ul>
 
-### &nbsp;&nbsp;Subscribe to our mailing list:
-<div class="container">
-	<div class="block">
-        <!-- subscribe form start -->
-		<div class="form-group">
-			<form action="https://getsimpleform.com/messages?form_api_token=de1ba2f2f947822946fb6e835437ec78" method="post">
-			<div class="form-group">
-				<input type='text' class="form-control" name='Email' placeholder="Email" required/>
-			</div>
-			<div>
-                        	<button class="btn btn-default" type='submit'>Subscribe</button>
-                    	</div>
-                	</form>
-		</div>
-	</div>
+###   Subscribe to our mailing list:
+
+::: container
+```         
+<div class="block">
+    <!-- subscribe form start -->
+    <div class="form-group">
+        <form action="https://getsimpleform.com/messages?form_api_token=de1ba2f2f947822946fb6e835437ec78" method="post">
+        <div class="form-group">
+            <input type='text' class="form-control" name='Email' placeholder="Email" required/>
+        </div>
+        <div>
+                        <button class="btn btn-default" type='submit'>Subscribe</button>
+                    </div>
+                </form>
+    </div>
 </div>
+```
+:::
