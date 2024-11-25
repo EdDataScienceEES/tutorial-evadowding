@@ -64,7 +64,7 @@ glimpse(phenology)
 ```
 This has the dates and times of observation of many different phenological events over 7 years. You can see that all of the variables load in as character variables, apart from the index `X` and the year `X2008`.
 
-## 1. Create, modify and understand dates and times in Base R
+## 1. Create and understand dates and times in Base R
 
 Dates and date-times are two different data classes in R. There is not a base R time data class, the library `hmu` deals with that but that is beyond the scope of today's tutorial. The date class is simply called `Date`, while the date-time class is called `POSIXlt`. They are written as year-month-day hour:minute:second, or just year-month-day. We will define a date and a date-time below using the `as.Date` and `as.POSIXlt` functions.
 
@@ -98,6 +98,14 @@ as.Date("August 7th, 1989", format = "%B %dth, %Y")  # We have to tell R what fo
 as.POSIXlt("15 Jan 2002 03:15", format = "%d %b %Y %H:%M")
 
 ```
+These functions can also run on vectors etc.
+```r
+# Create a vector of character dates
+date_vec <- c("3 Dec 2020", "10 Dec 2021", "15 Dec 2025")
+
+# Convert to dates, format and print
+(date_vec <- as.Date(date_vec, format = "%d %b %Y"))
+```
 This can get quite complicated quite quickly, not to mention when we get into time zones and timelines (we'll come to that later). 
 
 |Code	|Meaning	|Code	|Meaning |
@@ -114,12 +122,13 @@ This can get quite complicated quite quickly, not to mention when we get into ti
 |%y	|2-digit year	|%Y	|4-digit year |
 |%z	|Offset from GMT	|%Z	|Time zone (character) |
 
-Don't worry about learning this! It's just to demostrate how complicated dates can get.
+Don't worry about learning this! It's just to demostrate how complicated dates can get. We'll use the package `lubridate` to simplify this.
+
 
 
 <a name="section2"></a>
 
-## 2. The second section
+## 2. Using lubridate to simplify dates and times
 
 You can add more text and code, e.g.
 
