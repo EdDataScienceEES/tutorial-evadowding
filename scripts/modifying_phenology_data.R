@@ -9,7 +9,7 @@ library(tidyr)  # Tidying data
 library(lubridate)  # Date manipulation
 
 # Loading in data
-phen <- read.csv("data/phenology_data_original.csv")
+phen <- read.csv("source_data/phenology_data_original.csv")
 
 # Investigating structure
 glimpse(phen)
