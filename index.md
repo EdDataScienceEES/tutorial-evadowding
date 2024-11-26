@@ -216,6 +216,101 @@ tz(phenology$X2006)
 
 ```
 
+All you need to do to edit these values is assign them a new value.
+
+```r
+# Check initial value 
+phenology$X2005[1]
+
+# Change the month from April to May
+month(phenology$X2005[1]) <- 5
+
+# Check final value
+phenology$X2005[1]
+```
+
+### 2.4 Time spans
+
+There are 3 different ways to treat time spans in `lubridate`. They exist mostly to deal with timeline irregularities such as leap years, time zone changes or leap seconds. These can mess with date and date-time data because it means that the lengths of minutes, hours, days, months and years are not constant. You can use whichever form makes sense for your data.
+
+#### 2.4.1 Periods
+
+Periods only measure differences between times on a clock or calendar. This means that they ignore timeline irregularities. For example, in the UK the clocks go back by one hour at 2 am on the last Sunday in October, and the _period_ between 1 am and 2 am would only be an hour, despite the fact that the hour of 1 o'clock had happened twice. 
+
+We might use these if we were interested in events that happen at a specific time according to the clock, such as what times roads were busiest on workdays. Humans pay attention to clocks!
+
+Periods in `lubridate` are defined by _plurals_ and can be added or subtracted from dates and date-times.
+
+```r
+# Creating a period
+period <- years(13) + months(1) + days(39)
+# Look at the period - how is it shown in R?
+period
+
+# Adding a period to a date
+phenology$X2006[1]  # View the initial date
+phenology$X2006[1] + period  # View the new date
+
+# Measuring the period between two dates
+as.period(phenology$X2006[2] - phenology$X2006[1])
+```
+
+Periods are stored as a number of units such as years, days and hours.
+
+#### 2.4.2 Durations
+
+Durations are the amount of time that has *actually* passed, i.e. how much time an observer would notice passing. When the clocks go back in October, the duration between 1 am and 2 am would be 2 hours.
+
+These might be useful to us if we were interested in physical processes, (which, if you're an ecologist or environmental scientist, you often are!) such as if you were measuring incubation time of bird eggs, or the persistence of a pollutant in a waterbody.
+
+Durations in `lubridate` are defined with a _d_, e.g.
+
+```r
+# Creating a duration
+duration <- dyears(13) + dmonths(1) + ddays(39)
+# Look at the duration - how is it shown in R?
+duration
+
+# Adding a duration to a date
+phenology$X2006[1]  # View the initial date
+phenology$X2006[1] + duration  # View the new date - is it the same as when we added the period?
+
+# Measuring the duration between two dates
+as.duration(phenology$X2006[2] - phenology$X2006[1])
+
+```
+
+Durations in R are stored as the number of seconds that would pass, as seconds are the main unit of time we're dealing with that is constant.
+
+#### 2.4.3 Intervals
+
+The thirds type of time span in `lubridate` is an interval. These are made up of a start and end date-time, and as a result they can be converted to periods or durations. 
+
+They might be useful if you were checking whether dates and date ranges overlapped, e.g. comparing whether bird eggs hatched within or outwith the average hatching interval, or checking how breeding seasons of neighbouring deer populations overlapped.
+
+Intervals are defined using the `interval()` function.
+
+```r
+# Creating an interval
+interval1 <- interval(phenology$X2005[1], phenology$X2005[2])
+# Look at interval 1
+interval1
+
+# Does Quercus robus leaf unfolding occur within interval 1 in 2005?
+phenology$X2005[3] %within% interval1
+
+# Create a second interval
+interval2 <- interval(phenology$X2005[3], phenology$X2005[4])
+# Look at interval 2
+interval2
+
+# Do these intervals overlap?
+int_overlaps(interval1, interval2)
+```
+
+You can do some other interesting things with intervals, such as converting them to periods and durations, or shifting them along the timeline. I recommend having a look at [R for Data Science](https://r4ds.had.co.nz/dates-and-times.html#dates-and-times) or the [Lubridate website](https://lubridate.tidyverse.org/) if you'd like some more information.
+
+
 <center><img src="{{ site.baseurl }}/IMAGE_NAME.png" alt="Img" style="width: 800px;"/></center>
 
 <a name="section1"></a>
