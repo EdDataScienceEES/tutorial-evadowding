@@ -66,6 +66,8 @@ This has the dates and times of observation of many different phenological event
 
 ## 1. Create and understand dates and times in Base R
 
+### 1.1 Creating dates and date-times in Base R
+
 Dates and date-times are two different data classes in R. There is not a base R time data class, the library `hmu` deals with that but that is beyond the scope of today's tutorial. The date class is simply called `Date`, while the date-time class is called `POSIXlt`. They are written as year-month-day hour:minute:second, or just year-month-day. We will define a date and a date-time below using the `as.Date` and `as.POSIXlt` functions.
 
 ```r
@@ -81,10 +83,14 @@ as.numeric(datetime)
 ```
 You get 16599, then 1459243605, but what do they mean?
 
+### 1.2 Understanding dates in R
+
 Dates in R are stored as the number of days since 1st January 1970, and date-times are stored as the number of seconds since then. This means that there were 16599 days between 1970/01/01 and 2015/06/13, and 1459243605 between 1970/01/01 and 2016/03/30 13:40:05. 
 If you want to find out exactly how many seconds have passed since 01/01/1970, you can run `as.numeric(Sys.time())` and likewise, for the number of days you can run `as.numeric(Sys.date()).` `Sys.time()` and `Sys.date()` give you the current time and date according to your computer.
 
 You might have noticed that in the above example, in our date we used dashes to separate our date, whereas in the date-time we used forward slashes. Either is fine. The important thing here is the order of year/month/date.
+
+### 1.3 Formatting dates in Base R
 
 This is fine, but when we have dates and times in many different formats, things begin to get a bit complicated. If you have another `glimpse()` at the `phenology` data, you will see that every year has their event dates in a different format. We can deal with this in base R, but it does begin to get a bit complicated. If we wanted to make a date from the character string "August 7th 1989", we can use the code below.
 
@@ -130,31 +136,9 @@ Don't worry about learning this! It's just to demostrate how complicated dates c
 
 ## 2. Using lubridate to simplify dates and times
 
-You can add more text and code, e.g.
+### 2.1 Creating dates and date-times with `lubridate`
 
-``` r
-# Create fake data
-x_dat <- rnorm(n = 100, mean = 5, sd = 2)  # x data
-y_dat <- rnorm(n = 100, mean = 10, sd = 0.2)  # y data
-xy <- data.frame(x_dat, y_dat)  # combine into data frame
-```
-
-Here you can add some more text if you wish.
-
-``` r
-xy_fil <- xy %>%  # Create object with the contents of `xy`
-    filter(x_dat < 7.5)  # Keep rows where `x_dat` is less than 7.5
-```
-
-And finally, plot the data:
-
-``` r
-ggplot(data = xy_fil, aes(x = x_dat, y = y_dat)) +  # Select the data to use
-    geom_point() +  # Draw scatter points
-    geom_smooth(method = "loess")  # Draw a loess curve
-```
-
-At this point it would be a good idea to include an image of what the plot is meant to look like so students can check they've done it right. Replace `IMAGE_NAME.png` with your own image file:
+We can avoid most of this formatting struggle with a package called `lubridate`! 
 
 <center><img src="{{ site.baseurl }}/IMAGE_NAME.png" alt="Img" style="width: 800px;"/></center>
 
