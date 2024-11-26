@@ -34,7 +34,7 @@ This is some introductory text for your tutorial. Explain the skills that will b
 
 ## Downloading data
 
-We're going to use two different data sources in this tutorial: phenology data describing the timings of natural events of tree species in the International Phenology Garden at Alice Holt, Hampshire (more information can be found [here](https://www.data.gov.uk/dataset/f9994171-c71f-4aff-b738-54d40b96112c/observations-from-the-international-phenology-garden-at-alice-holt-hampshire-2005-2015)) and monthly CO2 emission estimates of different countries from the Emissions Database for Global Atmospheric Research (EDGAR) (more information can be found [here](https://edgar.jrc.ec.europa.eu/dataset_ghg2024#intro)). This data has been reformatted and subsetted to make it more suitable for this tutorial, but the actual data is still correct.
+We're going to use two different data sources in this tutorial: phenology data describing the timings of natural events of tree species in the International Phenology Garden at Alice Holt, Hampshire (more information can be found [here](https://www.data.gov.uk/dataset/f9994171-c71f-4aff-b738-54d40b96112c/observations-from-the-international-phenology-garden-at-alice-holt-hampshire-2005-2015)) and monthly CO2 emission estimates of different countries from the Emissions Database for Global Atmospheric Research (EDGAR) (more information can be found [here](https://edgar.jrc.ec.europa.eu/dataset_ghg2024#intro)). This data has been reformatted and subsetted, and times have been added, to make it more suitable for this tutorial, but the actual dates are still correct.
 
 You can access this data by going to [this repository](https://github.com/EdDataScienceEES/tutorial-evadowding.git) and cloning and downloading the repository as a zip file. You can then set your working directory as shown in the code below. Make a new R script with `File/New File/R Script` or with `Ctrl+Shift+N`.
 
@@ -66,12 +66,14 @@ This has the dates and times of observation of many different phenological event
 
 ## 1. Create and understand dates and times in Base R
 
-### 1.1 Creating dates and date-times in Base R
+### 1.1 Parsing dates and date-times in Base R
 
-Dates and date-times are two different data classes in R. There is not a base R time data class, the library `hmu` deals with that but that is beyond the scope of today's tutorial. The date class is simply called `Date`, while the date-time class is called `POSIXlt`. They are written as year-month-day hour:minute:second, or just year-month-day. We will define a date and a date-time below using the `as.Date` and `as.POSIXlt` functions.
+Dates and date-times are two different data classes in R. There is not a base R time data class, the library `hmu` deals with that but that is beyond the scope of today's tutorial. The date class is simply called `Date`, while the date-time class is called `POSIXlt`. They are written as year-month-day hour:minute:second, or just year-month-day. 
+
+We will define a date and a date-time below using the `as.Date` and `as.POSIXlt` functions. We are "parsing" the date here, i.e. the function is looking through the input and extracting the information used to make a date.
 
 ```r
-# Creating dates and date-times in base R
+# Parsing dates and date-times in base R
 date <- as.Date("2015-06-13")  # Defining a date
 datetime <- as.POSIXlt("2016/03/30 13:40:05")  # Defining a date-time
 
@@ -85,7 +87,7 @@ You get 16599, then 1459243605, but what do they mean?
 
 ### 1.2 Understanding dates in R
 
-Dates in R are stored as the number of days since 1st January 1970, and date-times are stored as the number of seconds since then. This means that there were 16599 days between 1970/01/01 and 2015/06/13, and 1459243605 between 1970/01/01 and 2016/03/30 13:40:05. 
+Dates in R are stored as the number of days since 1st January 1970 UTC, and date-times are stored as the number of seconds since then. This means that there were 16599 days between 1970/01/01 and 2015/06/13, and 1459243605 between 1970/01/01 and 2016/03/30 13:40:05. 
 If you want to find out exactly how many seconds have passed since 01/01/1970, you can run `as.numeric(Sys.time())` and likewise, for the number of days you can run `as.numeric(Sys.date()).` `Sys.time()` and `Sys.date()` give you the current time and date according to your computer.
 
 You might have noticed that in the above example, in our date we used dashes to separate our date, whereas in the date-time we used forward slashes. Either is fine. The important thing here is the order of year/month/date.
@@ -95,7 +97,7 @@ You might have noticed that in the above example, in our date we used dashes to 
 This is fine, but when we have dates and times in many different formats, things begin to get a bit complicated. If you have another `glimpse()` at the `phenology` data, you will see that every year has their event dates in a different format. We can deal with this in base R, but it does begin to get a bit complicated. If we wanted to make a date from the character string "August 7th 1989", we can use the code below.
 
 ```r
-
+# Formatting
 as.Date("August 7th, 1989")  # This just produces an NA!
 
 as.Date("August 7th, 1989", format = "%B %dth, %Y")  # We have to tell R what format the date is in.
@@ -136,9 +138,83 @@ Don't worry about learning this! It's just to demostrate how complicated dates c
 
 ## 2. Using lubridate to simplify dates and times
 
-### 2.1 Creating dates and date-times with `lubridate`
+### 2.1 Parsing dates and date-times with `lubridate`
 
-We can avoid most of this formatting struggle with a package called `lubridate`! 
+We can avoid most of this formatting struggle with a package called `lubridate`! This package was made to simplify how we handle dates and date-times in R, and has some useful functions.
+
+We'll use our `phenology` data again here to explore the `lubridate` package. 
+
+Our data is still all character data in different formats, but we can easily handle this with `lubridate`! To parse dates and date-times, we have a number of different functions such as `ymd()`, `dmy()` and `dmy_hms()`. These letters stand for year, month, day, hour, minute and second, and they can be reordered to suit whatever format your data is in. Let's have a look at this working below.
+
+```r
+glimpse(phenology)
+
+# Column X2005 is in the format day/month/year, so we can use the dmy() function
+dmy(phenology$X2005)
+# This should output dates in a standard format
+
+# Column X2006 has times as well! It is in the format day/month/year h:m, so use the dmy_hm() function
+dmy_hm(phenology$X2006)
+# Check the output here!
+
+```
+### 2.2 Time Zones
+
+Did you notice the letters after the times in the X2006 date-times? These are the time zones of the date-times, and the function assumes they are in the Universal Time Coordinated (UTC) time zone. This is the roughly the same as Greenwich Mean Time. Only date-times, and not dates, have time zones associated with them.
+
+`lubridate` uses a global list of time zones that can be viewed with the function `OlsonNames()`. There are quite a lot of time zones here, so you can view the one your computer is in easily using the `Sys.timezone()` function. Depending on where and when you are looking at this, your time zone may not be UTC. 
+
+The data may also not have been collected in UTC! This won't always matter too much, but if you are interested in exact durations of time with your data, it might get messed up by timezone shifts if you don't account for this (e.g. if your data is collected across the world, or in a country with Daylight Savings Time). We can specify the timezone of our date-times by adding a `tz = ` argument to our function like so.
+
+```r
+# Specifying the time zone the data were collected in
+dmy_hm(phenology$X2006, tz = "Europe/London")  # These data were collected in Hampshire, England
+# See how some data are set to British Summer Time (BST) and some are set to Greenwich Mean Time (GMT)
+```
+
+### 2.3 Accessing and editing dates and date-times
+
+If you want to extract or change elements of dates and date-times, `lubridate` has you covered! These functions are helpfully named, e.g. `date()` for accessing a date, `hour()` for accessing an hour etc. Have a look below.
+
+```r
+# First we should set the data type in the phenology set to date or date-time
+phenology$X2005 <- dmy(phenology$X2005)
+
+# Check the days of the month recorded in 2005
+day(phenology$X2005)
+
+# Check the month that phenological events occurred in 2005
+month(phenology$X2005)
+
+# Check that the years are all correct in the 2005 column
+year(phenology$X2005)
+
+# Check which week of the year phenological events occurred in 2005
+week(phenology$X2005)
+
+# Check the weekday of the 2005 records
+wday(phenology$X2005)
+
+# We can do the same with a date-time!
+# First set column X2006 to date-time
+phenology$X2006 <- dmy_hm(phenology$X2006, tz = "Europe/London")
+
+# Look at the date component of a date-time
+date(phenology$X2006)
+
+# Check the hour
+hour(phenology$X2006)
+
+# Check the minute
+minute(phenology$X2006)
+
+# Check the second
+second(phenology$X2006)
+
+# Check the time zone
+tz(phenology$X2006)
+
+```
 
 <center><img src="{{ site.baseurl }}/IMAGE_NAME.png" alt="Img" style="width: 800px;"/></center>
 
