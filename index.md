@@ -12,11 +12,25 @@
 
 ### Tutorial Steps
 
-1.  <a href="#section1"> Learn to use date and time formats in R using the "lubridate" package</a>
+1.  <a href="#section1"> Create and understand dates and times in Base R</a>
 
-2.  <a href="#section2"> Plotting and data visualisation with time series</a>
+    1.1 <a href="#section2"> Parsing dates and date-times in Base R</a>
+    
+    1.2 <a href="#section3"> Understanding dates in R </a>
+    
+    1.3 <a href="#section4"> Formatting dates in Base R </a>
 
-3.  <a href="#section3"> Trends in time series data</a>
+2.  <a href="#section5"> Plotting and data visualisation with time series</a>
+
+    2.1 <a href="#section6"> Parsing dates and date-times with `lubridate`</a>
+    
+    2.2 <a href="section7"> Time Zones </a>
+    
+    2.3 <a href="#section8"> Accessing and editing dates and date-times </a>
+    
+    2.4 <a href="#section9"> Time spans </a>
+
+3.  <a href="#section4"> Trends in time series data</a>
 
 ## You can read this text, then delete it and replace it with your text about your tutorial: what are the aims, what code do you need to achieve them?
 
@@ -25,8 +39,6 @@ We are using `<a href="#section_number">text</a>` to create anchors within our t
 To create subheadings, you can use `#`, e.g. `# Subheading 1` creates a subheading with a large font size. The more hashtags you add, the smaller the text becomes. If you want to make text bold, you can surround it with `__text__`, which creates **text**. For italics, use only one understore around the text, e.g. `_text_`, *text*.
 
 This is some introductory text for your tutorial. Explain the skills that will be learned and why they are important. Set the tutorial in context.
-
-<a name="section1"></a>
 
 ## Downloading data
 
@@ -60,6 +72,9 @@ glimpse(phenology)
 ```
 This has the dates and times of observation of many different phenological events over 7 years. You can see that all of the variables load in as character variables, apart from the index `X` and the year `X2008`.
 
+<a name="section1"></a>
+<a name="section2"></a>
+
 ## 1. Create and understand dates and times in Base R
 
 ### 1.1 Parsing dates and date-times in Base R
@@ -81,12 +96,16 @@ as.numeric(datetime)
 ```
 You get 16599, then 1459243605, but what do they mean?
 
+<a name="section3"></a>
+
 ### 1.2 Understanding dates in R
 
 Dates in R are stored as the number of days since 1st January 1970 UTC, and date-times are stored as the number of seconds since then. This means that there were 16599 days between 1970/01/01 and 2015/06/13, and 1459243605 between 1970/01/01 and 2016/03/30 13:40:05. 
 If you want to find out exactly how many seconds have passed since 01/01/1970, you can run `as.numeric(Sys.time())` and likewise, for the number of days you can run `as.numeric(Sys.date()).` `Sys.time()` and `Sys.date()` give you the current time and date according to your computer.
 
 You might have noticed that in the above example, in our date we used dashes to separate our date, whereas in the date-time we used forward slashes. Either is fine. The important thing here is the order of year/month/date.
+
+<a name="section4"></a>
 
 ### 1.3 Formatting dates in Base R
 
@@ -130,7 +149,9 @@ Don't worry about learning this! It's just to demostrate how complicated dates c
 
 
 
-<a name="section2"></a>
+<a name="section5"></a>
+
+<a name="section6"></a>
 
 ## 2. Using lubridate to simplify dates and times
 
@@ -154,6 +175,8 @@ dmy_hm(phenology$X2006)
 # Check the output here!
 
 ```
+<a name="section7"></a>
+
 ### 2.2 Time Zones
 
 Did you notice the letters after the times in the X2006 date-times? These are the time zones of the date-times, and the function assumes they are in the Universal Time Coordinated (UTC) time zone. This is the roughly the same as Greenwich Mean Time. Only date-times, and not dates, have time zones associated with them.
@@ -167,6 +190,7 @@ The data may also not have been collected in UTC! This won't always matter too m
 dmy_hm(phenology$X2006, tz = "Europe/London")  # These data were collected in Hampshire, England
 # See how some data are set to British Summer Time (BST) and some are set to Greenwich Mean Time (GMT)
 ```
+<a name="section8"></a>
 
 ### 2.3 Accessing and editing dates and date-times
 
@@ -224,6 +248,7 @@ month(phenology$X2005[1]) <- 5
 # Check final value
 phenology$X2005[1]
 ```
+<a name="section9"></a>
 
 ### 2.4 Time spans
 
@@ -253,6 +278,7 @@ as.period(phenology$X2006[2] - phenology$X2006[1])
 
 Periods are stored as a number of units such as years, days and hours.
 
+
 #### 2.4.2 Durations
 
 Durations are the amount of time that has *actually* passed, i.e. how much time an observer would notice passing. When the clocks go back in October, the duration between 1 am and 2 am would be 2 hours.
@@ -277,6 +303,7 @@ as.duration(phenology$X2006[2] - phenology$X2006[1])
 ```
 
 Durations in R are stored as the number of seconds that would pass, as seconds are the main unit of time we're dealing with that is constant.
+
 
 #### 2.4.3 Intervals
 
