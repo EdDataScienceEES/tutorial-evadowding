@@ -2,6 +2,8 @@
 # It's purpose is to modify the Observations from the International Phenology Garden 
 # at Alice Holt, Hampshire (2005-2015) data from the Forestry Commission (Open Government Licence v3.0)
 # for use in a tutorial.
+# Don't run this again unless you have lost the csv file! I had to manually change some values
+# in  the 2008 column as they lost 0s, which changed the dates.
 
 # Load in libraries ----
 library(dplyr)  # Data manipulation
