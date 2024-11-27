@@ -9,6 +9,7 @@
 library(lubridate)  # Date and time manipulation
 library(dplyr)  # Data manipulation package
 library(ggplot2)  # Data visualisation package
+library(tidyr)  # Data tidying package
 
 # Load data
 phenology <- read.csv("data/messy_phenology.csv")  # Loading in Alice Holt Phenology data
@@ -90,3 +91,106 @@ second(phenology$X2006)
 
 # Check the time zone
 tz(phenology$X2006)
+
+# Check initial value 
+phenology$X2005[1]
+
+# Change the month from April to May
+month(phenology$X2005[1]) <- 5
+
+# Check final value
+phenology$X2005[1]
+
+# Creating a period
+period <- years(13) + months(1) + days(39)
+# Look at the period
+period
+
+# Adding a period to a date
+phenology$X2006[1]  # View the initial date
+phenology$X2006[1] + period  # View the new date
+
+# Measuring the period between two dates
+as.period(phenology$X2006[2] - phenology$X2006[1])
+
+# Creating a duration
+duration <- dyears(13) + dmonths(1) + ddays(39)
+# Look at the duration - how is it shown in R?
+duration
+
+# Adding a duration to a date
+phenology$X2006[1]  # View the initial date
+phenology$X2006[1] + duration  # View the new date - is it the same as when we added the period?
+
+# Measuring the duration between two dates
+as.duration(phenology$X2006[2] - phenology$X2006[1])
+
+# Creating an interval
+interval1 <- interval(phenology$X2005[1], phenology$X2005[2])
+# Look at interval 1
+interval1
+
+# Does Quercus robus leaf unfolding occur within interval 1 in 2005?
+phenology$X2005[3] %within% interval1
+
+# Create a second interval
+interval2 <- interval(phenology$X2005[3], phenology$X2005[4])
+# Look at interval 2
+interval2
+
+# Do these intervals overlap?
+int_overlaps(interval1, interval2)
+
+
+# Section 3 ----
+
+glimpse(emissions)
+
+# Getting the data into the correct form
+long_emissions <- emissions %>% 
+  pivot_longer(cols = Jan:Dec,
+               names_to = "Month",
+               values_to = "CO2_emission_kton") %>%  # Pivot data to long form 
+  mutate(date = ym(paste(Year, Month)))  # Create a date with ym() function from Year and Month columns
+
+# Finding top 5 emitters
+total_emissions <- long_emissions %>%
+  group_by(Name) %>%  # Group by country
+  mutate(Total_emissions = sum(CO2_emission_kton)) %>%  # Make a new column for total emission
+  ungroup() %>%  # Ungroup
+  arrange(desc(Total_emissions))  # Arrange from highest emission to lowest
+  
+# Not working atm
+# slice_max(order_by = Total_emissions, n = 5, with_ties = TRUE, na_rm = TRUE)
+
+unique(total_emissions$Name)  # Print the countries in order of total emission
+# Top countries are China, United States, Russian Federation, Japan and India
+
+# Filtering data for plotting
+plot_emissions <- long_emissions %>% 
+  filter(Name == c("China", "United States", "Russian Federation", "Japan", "India")) %>% 
+  select(c(Name, date, CO2_emission_kton))
+
+# Basic plotting of data
+(plot <- ggplot(plot_emissions, aes(x = date,  # Date on the X axis
+                                    y = CO2_emission_kton,  # CO2 on the Y axis
+                                    colour = Name)) +  # Colour by country 
+  geom_line() +  # Line graph
+  theme_bw())  # Add a nice theme
+
+# Making this a bit nicer
+(nice_plot <- ggplot(plot_emissions, aes(x = date, 
+                                         y = CO2_emission_kton/1000,  # Convert emission to megatons
+                                         colour = Name)) +
+    geom_line() +
+    theme_bw() +
+    xlab("") +  # Date is self explanatory! 
+    ylab("Monthly CO2 emission (Mton)") +  # Y is now in Megatons
+    labs(colour = "Country") +  # Change legend title
+    scale_x_date(date_labels = "%b %Y",  # Using the table from earlier! Label formatting
+                 date_breaks = "5 years",  # How spaced are the axis labels?
+                 date_minor_breaks = "1 year",  # How spaced are the minor gridlines?
+                 limit = c(ym("1980 Jan"), NA)) +  #  Limiting date range from 1980 to maximum
+  theme(axis.text.x=element_text(angle=60, hjust=1)))  # Angle axis labels for readability
+
+

@@ -20,7 +20,7 @@
     
     1.3 <a href="#section4"> Formatting dates in Base R </a>
 
-2.  <a href="#section5"> Plotting and data visualisation with time series</a>
+2.  <a href="#section5"> Using lubridate to simplify dates and times</a>
 
     2.1 <a href="#section6"> Parsing dates and date-times with `lubridate`</a>
     
@@ -30,7 +30,7 @@
     
     2.4 <a href="#section9"> Time spans </a>
 
-3.  <a href="#section4"> Trends in time series data</a>
+3.  <a href="#section10"> Visualising time series data</a>
 
 ## You can read this text, then delete it and replace it with your text about your tutorial: what are the aims, what code do you need to achieve them?
 
@@ -57,6 +57,7 @@ You can access this data by going to [this repository](https://github.com/EdData
 library(lubridate)  # Date and time manipulation
 library(dplyr)  # Data manipulation package
 library(ggplot2)  # Data visualisation package
+library(tidyr)  # Data tidying package
 
 # Load data
 phenology <- read.csv("data/messy_phenology.csv")  # Loading in Alice Holt Phenology data
@@ -333,14 +334,76 @@ int_overlaps(interval1, interval2)
 
 You can do some other interesting things with intervals, such as converting them to periods and durations, or shifting them along the timeline. I recommend having a look at [R for Data Science](https://r4ds.had.co.nz/dates-and-times.html#dates-and-times) or the [Lubridate website](https://lubridate.tidyverse.org/) if you'd like some more information.
 
+<a name="section10"></a>
 
-<center><img src="{{ site.baseurl }}/IMAGE_NAME.png" alt="Img" style="width: 800px;"/></center>
+## 3. Visualising time series data
 
-<a name="section1"></a>
+Here is a brief introduction to plotting time series data in R. I will be using `ggplot2` in this tutorial. If you'd like to learn more about `ggplot2`, make sure to have a look at the Coding Club data visualisation [tutorials](https://ourcodingclub.github.io/tutorials.html).
 
-## 3. The third section
+We'll be plotting up the `emissions` data set mentioned earlier. Let's have a look at it.
 
-More text, code and images.
+```r
+glimpse(emissions)
+```
+This data is in a wide format, so the first thing we will need to do is put it into long format. GGplot uses the `date` data class to plot dates, so next we'll create a date column with the Month and Year columns.
+
+```r
+# Getting the data into the correct form
+long_emissions <- emissions %>% 
+  pivot_longer(cols = Jan:Dec,
+               names_to = "Month",
+               values_to = " CO2_emission_kton") %>%  # Pivot data to long form 
+  mutate(date = ym(paste(Year, Month)))  # Create a date with ym() function from Year and Month columns
+```
+Now we're going to plot the top 5 emitters of CO2 since 1970. We will first find which countries have the highest emissions.
+
+```r
+# Finding top 5 emitters
+total_emissions <- long_emissions %>%
+  group_by(Name) %>%  # Group by country
+  mutate(Total_emissions = sum(CO2_emission_kton)) %>%  # Make a new column for total emission
+  ungroup() %>%  # Ungroup
+  arrange(desc(Total_emissions))  # Arrange from highest emission to lowest
+  
+unique(total_emissions$Name)  # Print the countries in order of total emission
+# Top countries are China, United States, Russian Federation, Japan and India
+
+```
+We'll now filter our data for plotting.
+```r
+# Filtering data for plotting
+plot_emissions <- long_emissions %>% 
+  filter(Name == c("China", "United States", "Russian Federation", "Japan", "India")) %>% 
+  select(c(Name, date, CO2_emission_kton))
+```
+And now for plotting! Luckily ggplot recognises dates easily, all that is left for us to do is a bit of formatting. 
+
+```r
+# Basic plotting of data
+(plot <- ggplot(plot_emissions, aes(x = date,  # Date on the X axis
+                                    y = CO2_emission_kton,  # CO2 on the Y axis
+                                    colour = Name)) +  # Colour by country 
+  geom_line() +  # Line graph
+  theme_bw())  # Add a nice theme
+```
+The `scale_x_date()` element can be used to change the axis labels. We'll also add some labels, learn to limit the date range and make the axes more readable. If you'd 
+```r
+# Making this a bit nicer
+(nice_plot <- ggplot(plot_emissions, aes(x = date, 
+                                         y = CO2_emission_kton/1000,  # Convert emission to megatons
+                                         colour = Name)) +
+    geom_line() +
+    theme_bw() +
+    xlab("") +  # Date is self explanatory! 
+    ylab("Monthly CO2 emission (Mton)") +  # Y is now in Megatons
+    labs(colour = "Country") +  # Change legend title
+    scale_x_date(date_labels = "%b %Y",  # Using the table from earlier! Label formatting
+                 date_breaks = "5 years",  # How spaced are the axis labels?
+                 date_minor_breaks = "1 year",  # How spaced are the minor gridlines?
+                 limit = c(ym("1980 Jan"), NA)) +  #  Limiting date range from 1980 to maximum
+  theme(axis.text.x=element_text(angle=60, hjust=1)))  # Angle axis labels for readability
+
+```
 
 This is the end of the tutorial. Summarise what the student has learned, possibly even with a list of learning outcomes. In this tutorial we learned:
 
@@ -349,14 +412,3 @@ This is the end of the tutorial. Summarise what the student has learned, possibl
 ##### - how to create a scatterplot in ggplot2
 
 ##### - some of the different plot methods in ggplot2
-
-We can also provide some useful links, include a contact form and a way to send feedback.
-
-For more on `ggplot2`, read the official <a href="https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf" target="_blank">ggplot2 cheatsheet</a>.
-
-Everything below this is footer material - text and links that appears at the end of all of your tutorials.
-
-<hr>
-
-<hr>
-
