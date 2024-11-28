@@ -33,6 +33,8 @@ vignettes/*.pdf
 *.knit.md
 *.html
 .html
+*.Rproj
+.Rproj
 
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
