@@ -355,7 +355,7 @@ This data is in a wide format, so the first thing we will need to do is put it i
 long_emissions <- emissions %>% 
   pivot_longer(cols = Jan:Dec,
                names_to = "Month",
-               values_to = " CO2_emission_kton") %>%  # Pivot data to long form 
+               values_to = "CO2_emission_kton") %>%  # Pivot data to long form 
   mutate(date = ym(paste(Year, Month)))  # Create a date with ym() function from Year and Month columns
 ```
 Now we're going to plot the top 5 emitters of CO2 since 1970. We will first find which countries have the highest emissions.
