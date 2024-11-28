@@ -32,13 +32,10 @@
 
 3.  <a href="#section10"> Visualising time series data</a>
 
-## You can read this text, then delete it and replace it with your text about your tutorial: what are the aims, what code do you need to achieve them?
+4.  <a href="#section11"> Challenge</a>
 
-We are using `<a href="#section_number">text</a>` to create anchors within our text. For example, when you click on section one, the page will automatically go to where you have put `<a name="section_number"></a>`.
 
-To create subheadings, you can use `#`, e.g. `# Subheading 1` creates a subheading with a large font size. The more hashtags you add, the smaller the text becomes. If you want to make text bold, you can surround it with `__text__`, which creates **text**. For italics, use only one understore around the text, e.g. `_text_`, *text*.
-
-This is some introductory text for your tutorial. Explain the skills that will be learned and why they are important. Set the tutorial in context.
+In this tutorial we're going to learn how to deal with dates and date-times in R. This may seem like a fairly niche topic, but much of ecological and environmental data involves dates and times, particularly time series and phenological data. Some understanding of how this data is managed in R can help manage it correctly and visualise the data in an informative way.
 
 ## Downloading data
 
@@ -71,6 +68,7 @@ We can now have a look at the `phenology` data using `glimpse()` from the `dplyr
 # Explore the data
 glimpse(phenology)
 ```
+
 This has the dates and times of observation of many different phenological events over 7 years. You can see that all of the variables load in as character variables, apart from the index `X` and the year `X2008`.
 
 <a name="section1"></a>
@@ -122,6 +120,7 @@ as.Date("August 7th, 1989", format = "%B %dth, %Y")  # We have to tell R what fo
 as.POSIXlt("15 Jan 2002 03:15", format = "%d %b %Y %H:%M")
 
 ```
+
 These functions can also run on vectors etc.
 ```r
 # Create a vector of character dates
@@ -130,6 +129,8 @@ date_vec <- c("3 Dec 2020", "10 Dec 2021", "15 Dec 2025")
 # Convert to dates, format and print
 (date_vec <- as.Date(date_vec, format = "%d %b %Y"))
 ```
+
+
 This can get quite complicated quite quickly, not to mention when we get into time zones and timelines (we'll come to that later). 
 
 |Code	|Meaning	|Code	|Meaning |
@@ -191,6 +192,7 @@ The data may also not have been collected in UTC! This won't always matter too m
 dmy_hm(phenology$X2006, tz = "Europe/London")  # These data were collected in Hampshire, England
 # See how some data are set to British Summer Time (BST) and some are set to Greenwich Mean Time (GMT)
 ```
+
 <a name="section8"></a>
 
 ### 2.3 Accessing and editing dates and date-times
@@ -249,6 +251,7 @@ month(phenology$X2005[1]) <- 5
 # Check final value
 phenology$X2005[1]
 ```
+
 <a name="section9"></a>
 
 ### 2.4 Time spans
@@ -383,10 +386,12 @@ And now for plotting! Luckily ggplot recognises dates easily, all that is left f
 (plot <- ggplot(plot_emissions, aes(x = date,  # Date on the X axis
                                     y = CO2_emission_kton,  # CO2 on the Y axis
                                     colour = Name)) +  # Colour by country 
-  geom_line() +  # Line graph
-  theme_bw())  # Add a nice theme
+  geom_line())  # Line graph
 ```
-The `scale_x_date()` element can be used to change the axis labels. We'll also add some labels, learn to limit the date range and make the axes more readable. If you'd 
+
+![](images/basic_plot.png)
+
+The `scale_x_date()` element can be used to change the axis labels. We'll also add some labels, learn to limit the date range and make the axes more readable. If you'd like to learn more about data visualisation in `ggplot`, have a look at [Coding Club's Tutorials](https://ourcodingclub.github.io/tutorials.html).
 ```r
 # Making this a bit nicer
 (nice_plot <- ggplot(plot_emissions, aes(x = date, 
@@ -405,10 +410,29 @@ The `scale_x_date()` element can be used to change the axis labels. We'll also a
 
 ```
 
-This is the end of the tutorial. Summarise what the student has learned, possibly even with a list of learning outcomes. In this tutorial we learned:
+![](images/fancy_plot.png)
 
-##### - how to generate fake bivariate data
+Now we have a nicely formatted plot of a time series of data!
 
-##### - how to create a scatterplot in ggplot2
+## Summary
 
-##### - some of the different plot methods in ggplot2
+You have completed this tutorial on dates and date-times in R! In this tutorial we have:
+
+##### - improved understanding of dates and date-times in R
+
+##### - learned to use `lubridate` to better manipulate dates and date-times
+
+##### - plotted and formatted basic time series graphs in `ggplot`
+
+
+<a name="section11"></a>
+
+## 4. Challenge
+
+For some more practice, take another look at the `phenology` dataset. See if you can parse each year column into a date class using `lubridate`. Then, choose a species and try to make a boxplot of the dates of different phenological events. You should consider how you'll filter the data, and how you'd like to format the axes.
+
+_HINT: You can use `geom_boxplot()` instead of `geom_line()` to make a boxplot. Salix smithiana* (Germany) has lots of entries._
+
+
+
+<video src="images/fresh_rolex.mp4" width="300" height="240" controls></video>

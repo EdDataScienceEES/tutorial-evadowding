@@ -125,6 +125,8 @@ phenology$X2006[1] + duration  # View the new date - is it the same as when we a
 # Measuring the duration between two dates
 as.duration(phenology$X2006[2] - phenology$X2006[1])
 
+########################################
+
 # Creating an interval
 interval1 <- interval(phenology$X2005[1], phenology$X2005[2])
 # Look at interval 1
@@ -175,8 +177,7 @@ plot_emissions <- long_emissions %>%
 (plot <- ggplot(plot_emissions, aes(x = date,  # Date on the X axis
                                     y = CO2_emission_kton,  # CO2 on the Y axis
                                     colour = Name)) +  # Colour by country 
-  geom_line() +  # Line graph
-  theme_bw())  # Add a nice theme
+  geom_line())
 
 # Making this a bit nicer
 (nice_plot <- ggplot(plot_emissions, aes(x = date, 
